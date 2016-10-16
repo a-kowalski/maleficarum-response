@@ -9,8 +9,8 @@ class RawHandler extends \Maleficarum\Response\Handler\AbstractHandler
      * @see \Maleficarum\Response\Handler\AbstractHandler::handle()
      */
     public function handle($data, array $meta, $success, $template) {
-        if (null !== $data || !is_array($data)) {
-            throw new \InvalidArgumentException('Invalid template parameters provided. \Maleficarum\Response\Handler\RawHandler::handle()');
+        if (!is_string($data)) {
+            throw new \InvalidArgumentException('Invalid content provided. \Maleficarum\Response\Handler\RawHandler::handle()');
         }
 
         // initialize response content
