@@ -1,6 +1,11 @@
 # Change Log
 This is the Maleficarum Response component implementation. 
 
+## [1.0.2] - 2016-10-17
+### Fixed
+- Fixed parameters validation in TemplateHandler class
+- Add possibility to pass view object to the constructor
+
 ## [1.0.1] - 2016-10-16
 ### Fixed
 - Fixed content validation in RawHandler class
