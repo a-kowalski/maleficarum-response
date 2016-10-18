@@ -4,6 +4,24 @@ namespace Maleficarum\Response\Handler;
 
 class RawHandler extends \Maleficarum\Response\Handler\AbstractHandler
 {
+    /**
+     * Internal storage for response content-type
+     *
+     * @var string|null
+     */
+    private $contentType = null;
+
+    /* ------------------------------------ Magic methods START ---------------------------------------- */
+    /**
+     * RawHandler constructor.
+     *
+     * @param null|string $contentType
+     */
+    public function __construct($contentType = 'text/html') {
+        $this->contentType = $contentType;
+    }
+    /* ------------------------------------ Magic methods END ------------------------------------------ */
+
     /* ------------------------------------ AbstractHandler methods START ------------------------------ */
     /**
      * @see \Maleficarum\Response\Handler\AbstractHandler::handle()
@@ -27,10 +45,21 @@ class RawHandler extends \Maleficarum\Response\Handler\AbstractHandler
     }
 
     /**
+     * Set content type
+     *
+     * @param string $contentType
+     *
+     * @return \Maleficarum\Response\Handler\RawHandler
+     */
+    public function setContentType($contentType) {
+        $this->contentType = $contentType;
+    }
+
+    /**
      * @see \Maleficarum\Response\Handler\AbstractHandler::getContentType()
      */
     public function getContentType() {
-        return 'text/html';
+        return $this->contentType;
     }
     /* ------------------------------------ AbstractHandler methods END -------------------------------- */
 }

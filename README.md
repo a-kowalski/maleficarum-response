@@ -1,6 +1,10 @@
 # Change Log
 This is the Maleficarum Response component implementation. 
 
+## [1.1.0] - 2016-10-18
+### Added
+- Add possibility to pass content-type to the RawHandler
+
 ## [1.0.2] - 2016-10-17
 ### Fixed
 - Fixed parameters validation in TemplateHandler class
