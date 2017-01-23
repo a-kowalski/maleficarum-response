@@ -1,6 +1,10 @@
 # Change Log
 This is the Maleficarum Response component implementation. 
 
+## [2.0.0] - 2017-01-23
+### Changed
+- Add return and argument types declaration
+
 ## [1.1.0] - 2016-10-18
 ### Added
 - Add possibility to pass content-type to the RawHandler

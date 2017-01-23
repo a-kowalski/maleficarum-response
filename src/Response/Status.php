@@ -69,9 +69,9 @@ class Status
     /**
      * Internal storage for the map of status codes to status messages.
      *
-     * @var Array
+     * @var array
      */
-    private static $recommendedReasonPhrases = [
+    private static $statusMessages = [
         // INFORMATIONAL CODES
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -147,17 +147,18 @@ class Status
     /* ------------------------------------ Status methods START --------------------------------------- */
     /**
      * Fetch a string status message for the provided status code.
-     *
-     * @param integer $code
+     * 
+     * @param int $code
      *
      * @return string
      * @throws \InvalidArgumentException
      */
-    public static function getMessageForStatus($code) {
-        if (!is_int($code)) throw new \InvalidArgumentException('Incorrect HTTP code - integer expected. \Maleficarum\Response\Http\Status::getMessageForStatus()');
-        if (!array_key_exists($code, self::$recommendedReasonPhrases)) throw new \InvalidArgumentException('Unsupported HTTP code. \Maleficarum\Response\Http\Status::getMessageForStatus()');
+    public static function getMessageForStatus(int $code) : string {
+        if (!array_key_exists($code, self::$statusMessages)) {
+            throw new \InvalidArgumentException('Unsupported HTTP code. \Maleficarum\Response\Http\Status::getMessageForStatus()');
+        }
 
-        return self::$recommendedReasonPhrases[$code];
+        return self::$statusMessages[$code];
     }
     /* ------------------------------------ Status methods END ----------------------------------------- */
 }

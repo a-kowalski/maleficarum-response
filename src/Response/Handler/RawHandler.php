@@ -1,4 +1,7 @@
 <?php
+/**
+ * This class provides functionality of handling raw response
+ */
 
 namespace Maleficarum\Response\Handler;
 
@@ -7,59 +10,60 @@ class RawHandler extends \Maleficarum\Response\Handler\AbstractHandler
     /**
      * Internal storage for response content-type
      *
-     * @var string|null
+     * @var string
      */
-    private $contentType = null;
+    private $contentType;
 
     /* ------------------------------------ Magic methods START ---------------------------------------- */
     /**
      * RawHandler constructor.
      *
-     * @param null|string $contentType
+     * @param string $contentType
      */
-    public function __construct($contentType = 'text/html') {
+    public function __construct(string $contentType = 'text/html') {
         $this->contentType = $contentType;
     }
     /* ------------------------------------ Magic methods END ------------------------------------------ */
 
     /* ------------------------------------ AbstractHandler methods START ------------------------------ */
     /**
+     * Handle response
+     *
      * @see \Maleficarum\Response\Handler\AbstractHandler::handle()
+     *
+     * @param string $data
+     *
+     * @return \Maleficarum\Response\Handler\AbstractHandler
      */
-    public function handle($data, array $meta, $success, $template) {
-        if (!is_string($data)) {
-            throw new \InvalidArgumentException('Invalid content provided. \Maleficarum\Response\Handler\RawHandler::handle()');
-        }
-
+    public function handle(string $data = '') : \Maleficarum\Response\Handler\AbstractHandler {
         // initialize response content
-        $this->content = $data;
+        $this->body = $data;
 
         return $this;
     }
+    /* ------------------------------------ AbstractHandler methods END -------------------------------- */
 
+    /* ------------------------------------ Setters & Getters START ------------------------------------ */
     /**
-     * @see \Maleficarum\Response\Handler\AbstractHandler::getBody()
+     * Get contentType
+     *
+     * @return string
      */
-    public function getBody() {
-        return $this->content;
+    public function getContentType() : string {
+        return $this->contentType;
     }
 
     /**
-     * Set content type
+     * Set contentType
      *
      * @param string $contentType
      *
      * @return \Maleficarum\Response\Handler\RawHandler
      */
-    public function setContentType($contentType) {
+    public function setContentType(string $contentType) : \Maleficarum\Response\Handler\RawHandler {
         $this->contentType = $contentType;
-    }
 
-    /**
-     * @see \Maleficarum\Response\Handler\AbstractHandler::getContentType()
-     */
-    public function getContentType() {
-        return $this->contentType;
+        return $this;
     }
-    /* ------------------------------------ AbstractHandler methods END -------------------------------- */
+    /* ------------------------------------ Setters & Getters END -------------------------------------- */
 }

@@ -1,4 +1,7 @@
 <?php
+/**
+ * This class is a base for all response handlers
+ */
 
 namespace Maleficarum\Response\Handler;
 
@@ -20,36 +23,35 @@ abstract class AbstractHandler
 
     /**
      * Internal storage for content
-     * 
-     * @var mixed
+     *
+     * @var string|null
      */
-    protected $content;
+    protected $body;
 
     /* ------------------------------------ Abstract methods START ------------------------------------- */
     /**
      * Handle response
-     * 
-     * @param mixed $data
-     * @param array $meta
-     * @param bool $success
-     * @param string|null $template
      *
-     * @return $this
+     * @return \Maleficarum\Response\Handler\AbstractHandler
      */
-    abstract public function handle($data, array $meta, $success, $template);
+    abstract public function handle() : \Maleficarum\Response\Handler\AbstractHandler;
 
+    /**
+     * Get response content type
+     *
+     * @return string
+     */
+    abstract public function getContentType() : string;
+    /* ------------------------------------ Abstract methods END --------------------------------------- */
+
+    /* ------------------------------------ Setters & Getters START ------------------------------------ */
     /**
      * Get response body
-     * 
-     * @return string
+     *
+     * @return string|null
      */
-    abstract public function getBody();
-
-    /**
-     * Get content type
-     * 
-     * @return string
-     */
-    abstract public function getContentType();
-    /* ------------------------------------ Abstract methods END --------------------------------------- */
+    public function getBody() {
+        return $this->body;
+    }
+    /* ------------------------------------ Setters & Getters END -------------------------------------- */
 }

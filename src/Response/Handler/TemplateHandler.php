@@ -1,4 +1,7 @@
 <?php
+/**
+ * This class provides functionality of template rendering
+ */
 
 namespace Maleficarum\Response\Handler;
 
@@ -6,7 +9,7 @@ class TemplateHandler extends \Maleficarum\Response\Handler\AbstractHandler
 {
     /**
      * Internal storage for view engine object
-     * 
+     *
      * @var \Phalcon\Mvc\View\Engine\Volt
      */
     private $view;
@@ -24,36 +27,35 @@ class TemplateHandler extends \Maleficarum\Response\Handler\AbstractHandler
 
     /* ------------------------------------ AbstractHandler methods START ------------------------------ */
     /**
+     * Handle response
+     *
      * @see \Maleficarum\Response\Handler\AbstractHandler::handle()
+     *
+     * @param string $template
+     * @param array $data
+     *
+     * @return \Maleficarum\Response\Handler\AbstractHandler
      */
-    public function handle($data, array $meta, $success, $template) {
-        if (null !== $data && !is_array($data)) {
-            throw new \InvalidArgumentException('Invalid template parameters provided. \Maleficarum\Response\Handler\TemplateHandler::handle()');
-        }
-
+    public function handle(string $template = '', array $data = []) : \Maleficarum\Response\Handler\AbstractHandler {
         if (empty($template)) {
-            throw new \InvalidArgumentException('Invalid template path provided. \Maleficarum\Response\Handler\TemplateHandler::handle()');
+            throw new \InvalidArgumentException(sprintf('Invalid template path provided. \%s::handle()', static::class));
         }
 
         $template = $this->view->getView()->getViewsDir() . $template . '.phtml';
 
         // initialize response content
-        $this->content = $this->view->render($template, $data);
+        $this->body = $this->view->render($template, $data);
 
         return $this;
     }
 
     /**
-     * @see \Maleficarum\Response\Handler\AbstractHandler::getBody()
-     */
-    public function getBody() {
-        return $this->content;
-    }
-
-    /**
+     * Get response content type
+     *
      * @see \Maleficarum\Response\Handler\AbstractHandler::getContentType()
+     * @return string
      */
-    public function getContentType() {
+    public function getContentType() : string {
         return 'text/html';
     }
     /* ------------------------------------ AbstractHandler methods END -------------------------------- */

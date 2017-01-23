@@ -19,7 +19,7 @@ class Response
 
     /**
      * Internal storage for response handler object
-     * 
+     *
      * @var \Maleficarum\Response\Handler\AbstractHandler|null
      */
     private $handler = null;
@@ -31,31 +31,79 @@ class Response
      * @param \Phalcon\Http\Response $response
      * @param \Maleficarum\Response\Handler\AbstractHandler $handler
      */
-    public function __construct(\Phalcon\Http\Response $response, \Maleficarum\Response\Handler\AbstractHandler $handler)
-    {
+    public function __construct(\Phalcon\Http\Response $response, \Maleficarum\Response\Handler\AbstractHandler $handler) {
         // initialize delegation
         $this->setResponseDelegation($response);
         $this->setHandler($handler);
 
-        // initialize response values
-        $this->getResponseDelegation()->setStatusCode(200, \Maleficarum\Response\Status::getMessageForStatus(200));
+        // set default status code and message
+        $this->setStatusCode(\Maleficarum\Response\Status::STATUS_CODE_200);
     }
     /* ------------------------------------ Magic methods END ------------------------------------------ */
 
     /* ------------------------------------ Response methods START ------------------------------------- */
     /**
      * Render a JSON format response.
-     *
-     * @param mixed $data
+     * 
+     * @param array $data
      * @param array $meta
      * @param bool $success
-     * @param string|null $template
      *
      * @return \Maleficarum\Response\Response
+     * @throws \LogicException
      */
-    public function render($data = [], array $meta = [], $success = true, $template = null)
-    {
-        $this->getHandler()->handle($data, $meta, $success, $template);
+    public function render(array $data = [], array $meta = [], bool $success = true) : \Maleficarum\Response\Response {
+        /** @var \Maleficarum\Response\Handler\JsonHandler $handler */
+        $handler = $this->getHandler();
+
+        if (!$handler instanceof \Maleficarum\Response\Handler\JsonHandler) {
+            throw new \LogicException(sprintf('Cannot render JSON data without appropriate handler. \%s::render()', static::class));
+        }
+
+        $handler->handle($data, $meta, $success);
+
+        return $this;
+    }
+
+    /**
+     * Render RAW data
+     * 
+     * @param string $data
+     *
+     * @return \Maleficarum\Response\Response
+     * @throws \LogicException
+     */
+    public function renderRaw(string $data) : \Maleficarum\Response\Response {
+        /** @var \Maleficarum\Response\Handler\RawHandler $handler */
+        $handler = $this->getHandler();
+
+        if (!$handler instanceof \Maleficarum\Response\Handler\RawHandler) {
+            throw new \LogicException(sprintf('Cannot render RAW data without appropriate handler. \%s::renderRaw()', static::class));
+        }
+
+        $handler->handle($data);
+
+        return $this;
+    }
+
+    /**
+     * Render template
+     * 
+     * @param string $template
+     * @param array $data
+     *
+     * @return \Maleficarum\Response\Response
+     * @throws \LogicException
+     */
+    public function renderTemplate(string $template, array $data = []) : \Maleficarum\Response\Response {
+        /** @var \Maleficarum\Response\Handler\TemplateHandler $handler */
+        $handler = $this->getHandler();
+
+        if (!$handler instanceof \Maleficarum\Response\Handler\TemplateHandler) {
+            throw new \LogicException(sprintf('Cannot render template without appropriate handler. \%s::renderTemplate()', static::class));
+        }
+
+        $handler->handle($template, $data);
 
         return $this;
     }
@@ -64,10 +112,8 @@ class Response
      * Output this response object. That includes sending out headers (if possible) and outputting response body
      *
      * @return \Maleficarum\Response\Response
-     * @throws \InvalidArgumentException
      */
-    public function output()
-    {
+    public function output() : \Maleficarum\Response\Response {
         $handler = $this->getHandler();
         // add typical response headers
         $this->getResponseDelegation()->setHeader('Content-Type', $handler->getContentType());
@@ -77,8 +123,6 @@ class Response
         return $this;
     }
 
-    /** RESPONSE DATA METHODS */
-
     /**
      * Redirect the request to a new URI
      *
@@ -86,12 +130,8 @@ class Response
      * @param bool $immediate
      *
      * @return \Maleficarum\Response\Response
-     * @throws \InvalidArgumentException
      */
-    public function redirect($url, $immediate = true)
-    {
-        if (!is_string($url)) throw new \InvalidArgumentException('Incorrect URL - string expected. \Maleficarum\Response\Http\Response::redirect()');
-
+    public function redirect(string $url, bool $immediate = true) : \Maleficarum\Response\Response {
         // send redirect header to the response object
         $this->getResponseDelegation()->redirect($url);
 
@@ -110,14 +150,9 @@ class Response
      * @param string $name
      * @param string $value
      *
-     * @throws \InvalidArgumentException
      * @return \Maleficarum\Response\Response
      */
-    public function addHeader($name, $value)
-    {
-        if (!is_string($name)) throw new \InvalidArgumentException('Incorrect header name - string expected. \Maleficarum\Response\Http\Response::addHeader()');
-        if (!is_string($value)) throw new \InvalidArgumentException('Incorrect header value - string expected. \Maleficarum\Response\Http\Response::addHeader()');
-
+    public function addHeader(string $name, string $value) : \Maleficarum\Response\Response {
         $this->getResponseDelegation()->setHeader($name, $value);
 
         return $this;
@@ -128,8 +163,7 @@ class Response
      *
      * @return \Maleficarum\Response\Response
      */
-    public function clearHeaders()
-    {
+    public function clearHeaders() : \Maleficarum\Response\Response {
         $this->getResponseDelegation()->resetHeaders();
 
         return $this;
@@ -140,8 +174,7 @@ class Response
      *
      * @return bool
      */
-    public function isSent()
-    {
+    public function isSent() : bool {
         return $this->getResponseDelegation()->isSent();
     }
 
@@ -149,14 +182,14 @@ class Response
      * This method will set the current status code and a RFC recommended status message for that code. Setting
      * an unsupported HTTP status code will result in an exception.
      *
-     * @param Integer $code
+     * @param int $code
      *
-     * @throws \InvalidArgumentException
      * @return \Maleficarum\Response\Response
      */
-    public function setStatusCode($code)
-    {
-        $this->getResponseDelegation()->setStatusCode($code, \Maleficarum\Response\Status::getMessageForStatus($code));
+    public function setStatusCode(int $code) : \Maleficarum\Response\Response {
+        $message = \Maleficarum\Response\Status::getMessageForStatus($code);
+
+        $this->getResponseDelegation()->setStatusCode($code, $message);
 
         return $this;
     }
@@ -164,33 +197,9 @@ class Response
 
     /* ------------------------------------ Setters & Getters START ------------------------------------ */
     /**
-     * Set the current response delegation object.
-     *
-     * @param \Phalcon\Http\Response $response
-     *
-     * @return \Maleficarum\Response\Response
-     */
-    private function setResponseDelegation(\Phalcon\Http\Response $response)
-    {
-        $this->phalconResponse = $response;
-
-        return $this;
-    }
-
-    /**
-     * Fetch the current response delegation object.
-     *
-     * @return \Phalcon\Http\Response
-     */
-    private function getResponseDelegation()
-    {
-        return $this->phalconResponse;
-    }
-
-    /**
      * Get handler
      *
-     * @return \Maleficarum\Response\Handler\AbstractHandler
+     * @return \Maleficarum\Response\Handler\AbstractHandler|null
      */
     public function getHandler() {
         return $this->handler;
@@ -203,10 +212,32 @@ class Response
      *
      * @return \Maleficarum\Response\Response
      */
-    public function setHandler(\Maleficarum\Response\Handler\AbstractHandler $handler) {
+    public function setHandler(\Maleficarum\Response\Handler\AbstractHandler $handler) : \Maleficarum\Response\Response {
         $this->handler = $handler;
 
         return $this;
+    }
+
+    /**
+     * Set the current response delegation object.
+     *
+     * @param \Phalcon\Http\Response $response
+     *
+     * @return \Maleficarum\Response\Response
+     */
+    private function setResponseDelegation(\Phalcon\Http\Response $response) : \Maleficarum\Response\Response {
+        $this->phalconResponse = $response;
+
+        return $this;
+    }
+
+    /**
+     * Fetch the current response delegation object.
+     *
+     * @return \Phalcon\Http\Response|null
+     */
+    private function getResponseDelegation() {
+        return $this->phalconResponse;
     }
     /* ------------------------------------ Setters & Getters END -------------------------------------- */
 }
