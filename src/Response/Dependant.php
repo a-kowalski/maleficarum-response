@@ -1,6 +1,6 @@
 <?php
 /**
- * This trait provides functionality common to all classes dependant on the \Maleficarum\Response\Response class.
+ * This trait provides functionality common to all classes dependant on the \Maleficarum\Response\AbstractResponse class.
  */
 
 namespace Maleficarum\Response;
@@ -10,19 +10,19 @@ trait Dependant
     /**
      * Internal storage for the response object.
      *
-     * @var \Maleficarum\Response\Response|null
+     * @var \Maleficarum\Response\AbstractResponse
      */
-    protected $response = null;
+    protected $response;
 
     /* ------------------------------------ Dependant methods START ------------------------------------ */
     /**
      * Inject a new response.
      *
-     * @param \Maleficarum\Response\Response $response
+     * @param \Maleficarum\Response\AbstractResponse $response
      *
      * @return $this
      */
-    public function setResponse(\Maleficarum\Response\Response $response) {
+    public function setResponse(\Maleficarum\Response\AbstractResponse $response) {
         $this->response = $response;
 
         return $this;
@@ -31,7 +31,7 @@ trait Dependant
     /**
      * Fetch the currently assigned response object.
      *
-     * @return \Maleficarum\Response\Response|null
+     * @return \Maleficarum\Response\AbstractResponse
      */
     public function getResponse() {
         return $this->response;

@@ -1,26 +1,13 @@
 {
     "name": "maleficarum/response",
     "description": "Maleficarum response component",
+    "license": "proprietary",
     "require": {
-        "php": ">=7.0",
-        "ext-phalcon": ">=3.0",
-        "ext-json": "*",
-        "maleficarum/profiler": "^2.0",
-        "maleficarum/config": "^2.0"
+        "php": ">=7.0"
     },
     "autoload": {
         "psr-4": {
             "Maleficarum\\Response\\": "src/Response/"
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:pharaun13/maleficarum-profiler.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:pharaun13/maleficarum-config.git"
-        }
-    ]
+    }
 }

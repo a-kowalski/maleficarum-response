@@ -1,6 +1,10 @@
 # Change Log
 This is the Maleficarum Response component implementation. 
 
+## [3.0.0] - 2017-02-22
+### Changed
+- Move HTTP response component to external repository
+
 ## [2.0.0] - 2017-01-23
 ### Changed
 - Add return and argument types declaration
