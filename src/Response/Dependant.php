@@ -5,8 +5,7 @@
 
 namespace Maleficarum\Response;
 
-trait Dependant
-{
+trait Dependant {
     /**
      * Internal storage for the response object.
      *
@@ -31,9 +30,9 @@ trait Dependant
     /**
      * Fetch the currently assigned response object.
      *
-     * @return \Maleficarum\Response\AbstractResponse
+     * @return \Maleficarum\Response\AbstractResponse|null
      */
-    public function getResponse() {
+    public function getResponse(): ?\Maleficarum\Response\AbstractResponse {
         return $this->response;
     }
 
